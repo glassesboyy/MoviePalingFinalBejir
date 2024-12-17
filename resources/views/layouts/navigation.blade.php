@@ -84,8 +84,8 @@
                         <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
@@ -102,8 +102,8 @@
                 {{ __('Films') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('user.booking.list')" :active="request()->routeIs('booking.list')">
-            {{ __('Booking') }}
-        </x-responsive-nav-link>
+                {{ __('Booking') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
@@ -117,7 +117,7 @@
                     <x-responsive-nav-link :href="route('profile.edit')" class="text-indigo-500 hover:text-indigo-700">
                         {{ __('Profile') }}
                     </x-responsive-nav-link>
-                    
+
                     <!-- Authentication -->
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -130,12 +130,14 @@
                 </div>
             @else
                 <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('login')" class="bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus-visible:ring-indigo-600 transition">
+                    <x-responsive-nav-link :href="route('login')"
+                        class="bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus-visible:ring-indigo-600 transition">
                         {{ __('Log in') }}
                     </x-responsive-nav-link>
 
                     @if (Route::has('register'))
-                        <x-responsive-nav-link :href="route('register')" class="bg-green-500 hover:bg-green-600 focus:outline-none focus-visible:ring-green-600 transition">
+                        <x-responsive-nav-link :href="route('register')"
+                            class="bg-green-500 hover:bg-green-600 focus:outline-none focus-visible:ring-green-600 transition">
                             {{ __('Register') }}
                         </x-responsive-nav-link>
                     @endif

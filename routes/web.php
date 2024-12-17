@@ -26,5 +26,35 @@ Route::get('admin/dashboard', function () {
 });
 
 Route::get('film', [UserMovieController::class, 'index'])->name('user.film.index');
+
+Route::get('storage/{path}', function($path) {
+    $fullPath = storage_path('app/public/' . $path);
+    
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+    
+    return response()->file($fullPath, [
+        'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Methods' => '*',
+        'Access-Control-Allow-Headers' => '*',
+    ]);
+})->where('path', '.*');
+
+Route::get('storage/posters/{filename}', function($filename) {
+    $path = storage_path('app/public/posters/' . $filename);
+    
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    
+    return response()->file($path, [
+        'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Methods' => '*',
+        'Access-Control-Allow-Headers' => '*',
+        'Content-Type' => 'image/jpeg',
+    ]);
+})->where('filename', '.*');
+
 require __DIR__ . '/auth.php';
 require __DIR__ . '/admin.php';

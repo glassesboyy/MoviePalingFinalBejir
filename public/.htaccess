@@ -14,10 +14,11 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Disable CORS
-    Header set Access-Control-Allow-Origin "*"
-    Header set Access-Control-Allow-Methods "GET,POST,OPTIONS,DELETE,PUT"
-    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+    <IfModule mod_headers.c>
+        Header set Access-Control-Allow-Origin "*"
+        Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Header set Access-Control-Allow-Headers "*"
+    </IfModule>
 
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
