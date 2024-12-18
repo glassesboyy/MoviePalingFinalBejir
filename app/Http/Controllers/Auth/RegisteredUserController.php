@@ -124,10 +124,13 @@ class RegisteredUserController extends Controller
         $otpRecord->update(['verified' => true]);
         $request->session()->forget('register_data');
 
-        // Generate JWT token
+        // Login user menggunakan web guard
+        Auth::login($user);
+
+        // Generate JWT token untuk API
         $token = Auth::guard('api')->login($user);
 
-        // Check if request wants JSON
+        // Untuk request API
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => 'Registration successful',
@@ -138,9 +141,9 @@ class RegisteredUserController extends Controller
             ]);
         }
 
-        // For web requests, redirect to appropriate page
+        // Untuk request web
         return redirect()->route('dashboard')
-            ->with('success', 'Registration successful! Welcome aboard!');
+            ->with('success', 'Registration successful! Welcome to your dashboard!');
     }
 
     private function sendOTPEmail($email, $otp)

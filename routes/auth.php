@@ -60,4 +60,9 @@ Route::middleware(['auth:web', 'role:user'])->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+    
+    // Add a specific route for user dashboard if needed
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 });

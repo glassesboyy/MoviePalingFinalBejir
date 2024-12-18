@@ -36,13 +36,11 @@ Route::prefix('admin')->middleware(['web'])->group(function () {  // Tambahkan m
         Route::delete('schedules/{id}', [SchedulesController::class, 'destroy']);
         Route::post('logout', [LoginController::class, 'destroy'])->name('admin.logout');
 
-            Route::get('/backups', [BackupRestoreController::class, 'listBackups'])->name('admin.backup-list');
-    Route::get('/backup/download/{filename}', [BackupRestoreController::class, 'downloadBackup'])
-        ->name('backup.download');
-    Route::delete('/backup/delete/{filename}', [BackupRestoreController::class, 'deleteBackup'])
-        ->name('backup.delete');
-    Route::get('/backup/create', [BackupRestoreController::class, 'backup'])->name('backup');
-    Route::post('/restore', [BackupRestoreController::class, 'restore'])->name('restore');
+        Route::get('/backups', [BackupRestoreController::class, 'listBackups'])->name('admin.backup-list');
+        Route::get('/backup/download/{filename}', [BackupRestoreController::class, 'downloadBackup']) ->name('backup.download');
+        Route::delete('/backup/delete/{filename}', [BackupRestoreController::class, 'deleteBackup']) ->name('backup.delete');
+        Route::get('/backup/create', [BackupRestoreController::class, 'backup'])->name('backup');
+        Route::post('/restore', [BackupRestoreController::class, 'restore'])->name('restore');
 
     });
 });

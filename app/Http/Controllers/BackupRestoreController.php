@@ -94,26 +94,28 @@ class BackupRestoreController extends Controller
         }
     }
     public function restore(Request $request)
-{
-    try {
-        $file = $request->file('backup_file');
-        $path = $file->storeAs('backups', $file->getClientOriginalName());
-        $fullPath = storage_path("app/{$path}");
-        $command = sprintf(
-            'mysql -u %s %s < "%s"',
-            config('database.connections.mysql.username'),
-            config('database.connections.mysql.database'),
-            $fullPath
-        );
-        
-        exec($command, $output, $returnVar);
-        if ($returnVar !== 0) {
-            throw new \Exception('mysql command failed.');
+    {
+        try {
+            $file = $request->file('backup_file');
+            $path = $file->storeAs('backups', $file->getClientOriginalName());
+            $fullPath = storage_path("app/{$path}");
+            $command = sprintf(
+                'mysql -u %s %s < "%s"',
+                config('database.connections.mysql.username'),
+                config('database.connections.mysql.database'),
+                $fullPath
+            );
+            
+            exec($command, $output, $returnVar);
+            if ($returnVar !== 0) {
+                throw new \Exception('mysql command failed.');
+            }
+            
+            // Redirect ke halaman backup-list dengan pesan sukses
+            return redirect()->route('admin.backup-list')->with('success', 'Database restored successfully');
+        } catch (\Exception $e) {
+            Log::error("Restore Error: " . $e->getMessage());
+            return redirect()->route('admin.backup-list')->with('error', 'Database restore failed: ' . $e->getMessage());
         }
-        return back()->with('success', 'Database restored successfully');
-    } catch (\Exception $e) {
-        Log::error("Restore Error: " . $e->getMessage());
-        return back()->with('error', 'Database restore failed: ' . $e->getMessage());
     }
-}
 }

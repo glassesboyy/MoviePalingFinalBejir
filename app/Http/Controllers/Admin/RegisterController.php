@@ -109,8 +109,14 @@ class RegisterController extends Controller
 
     private function sendOTPEmail($email, $otp)
     {
-        Mail::raw("Kode OTP Anda Adalah: $otp", function ($message) use ($email) {
-            $message->to($email)->subject('Kode verifikasi OTP');
-        });
+        try {
+            Mail::raw("Kode OTP Anda Adalah: $otp", function ($message) use ($email) {
+                $message->to($email)->subject('Kode verifikasi OTP');
+            });
+            return redirect()->route('admin.dashboard')->with('success', 'Registration Successful');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to send OTP. Please try again.');
+        }
     }
+
 }
