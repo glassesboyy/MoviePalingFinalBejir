@@ -22,7 +22,27 @@ Route::group([
     Route::post('/me', [AuthController::class, 'me'])->middleware('auth:api')->name('me');
 });
 
-// Existing API Routes
+// Movies Routes
 Route::resource('/movies', MovieController::class);
-Route::get('/booking/list', [BookingController::class, 'list']);
-Route::resource('/booking', BookingController::class);
+
+// Booking Routes
+Route::prefix('booking')->group(function () {
+    Route::get('/list', [BookingController::class, 'list']);
+    Route::get('/{scheduleId}', [BookingController::class, 'index']);
+    Route::post('/', [BookingController::class, 'store']);
+    Route::get('/konfirmasi/{scheduleId}', [BookingController::class, 'konfirmasi']);
+    Route::get('/detail/{id}', [BookingController::class, 'show']);
+    Route::put('/{id}', [BookingController::class, 'update']);
+    Route::delete('/{id}', [BookingController::class, 'destroy']);
+});
+
+// Add this new route group after booking routes
+Route::prefix('storage')->group(function () {
+    Route::get('/posters/{filename}', function ($filename) {
+        $path = storage_path('app/public/posters/' . $filename);
+        if (!file_exists($path)) {
+            return response()->json(['error' => 'File not found'], 404);
+        }
+        return response()->file($path);
+    });
+});

@@ -5,19 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Film;
+use App\Models\Schedule;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 
 class MovieController extends Controller
 {
     public function index()
     {
-        $movie = Film::all();
-        return response()->json([
-            'status' => true,
-            'message' => 'List Movies',
-            'data' => $movie,
-        ]);
+        $films = Film::latest()->get()->map(function($film) {
+            return $this->formatMovieData($film);
+        });
+        
+        return response()->json($films);
     }
 
     public function store(Request $request)
@@ -40,16 +39,7 @@ class MovieController extends Controller
             ],422);
         }
 
-        $data = $request->all();
-        
-        if ($request->hasFile('poster')) {
-            $file = $request->file('poster');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/posters', $filename);
-            $data['poster'] = $filename;
-        }
-
-        $movie = Film::create($data);
+        $movie = Film::create($request->all());
         return response()->json([
             'status' => true,
             'message' => 'Movies Created',
@@ -60,10 +50,13 @@ class MovieController extends Controller
     public function show(string $id)
     {
         $movie = Film::findOrFail($id);
+        $schedules = Schedule::where('films_id', $movie->id)->get();
+        $movieData = array_merge($this->formatMovieData($movie), ['schedules' => $schedules]);
+        
         return response()->json([
             'status' => true,
-            'message' => 'Data Movie Finded',
-            'data' => $movie,
+            'message' => 'Data Movie Found',
+            'data' => $movieData,
         ]);
     }
 
@@ -88,28 +81,14 @@ class MovieController extends Controller
         }
 
         $movie = Film::findOrFail($id);
-        $data = $request->all();
-
-        if ($request->hasFile('poster')) {
-            // Delete old poster if exists
-            if ($movie->poster) {
-                Storage::delete('public/posters/' . $movie->poster);
-            }
-            
-            $file = $request->file('poster');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/posters', $filename);
-            $data['poster'] = $filename;
-        }
-
-        $movie->update($data);
+        $movie->update($request->all());
         return response()->json([
             'status' => true,
             'message' => 'Movie Updated Successfully',
             'data' => $movie
         ],200);
     }
-
+    
     public function destroy(string $id)
     {
         
@@ -119,5 +98,19 @@ class MovieController extends Controller
             'status' => 'true',
             'message' => 'Movie Delete Successfully',
         ],204);
+    }
+
+    private function formatMovieData($film)
+    {
+        return [
+            'id' => $film->id,
+            'judul' => $film->judul,
+            'deskripsi' => $film->deskripsi,
+            'genre' => explode(', ', $film->genre),
+            'tanggalRilis' => $film->tanggalRilis,
+            'duration' => $film->duration,
+            'status' => $film->status,
+            'poster_url' => $film->poster ? url('api/storage/posters/' . basename($film->poster)) : null
+        ];
     }
 }

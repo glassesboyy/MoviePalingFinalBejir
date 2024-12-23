@@ -20,13 +20,7 @@ class Film extends Model
         'status',
     ];
 
-    public function getPosterUrlAttribute()
-    {
-        if ($this->poster) {
-            return asset('storage/' . $this->poster);
-        }
-        return asset('images/default-poster.png'); // Gambar default jika tidak ada poster
-    }
+    protected $hidden = ['remember_token']; // Hapus 'poster' dari hidden
 
     public function schedules()
     {

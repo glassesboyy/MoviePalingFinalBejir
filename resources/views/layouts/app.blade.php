@@ -17,6 +17,14 @@
     <!-- Scripts -->
     {!! htmlScriptTagJsApi() !!}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Display CSRF Token in Console -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            console.log('CSRF Token:', token);
+        });
+    </script>
 </head>
 
 <body class="font-sans antialiased">
